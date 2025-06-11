@@ -62,3 +62,34 @@ export const isNotAuthenticated = (req, res, next) => {
   }
   next();
 };
+
+// Middleware for password validation
+export const validatePassword = (req, res, next) => {
+  const { password } = req.body;
+  const errors = [];
+  
+  if (password.length < 8) {
+    errors.push('Password must be at least 8 characters');
+  }
+  if (!/[A-Z]/.test(password)) {
+    errors.push('Password must contain at least one uppercase letter');
+  }
+  if (!/[a-z]/.test(password)) {
+    errors.push('Password must contain at least one lowercase letter');
+  }
+  if (!/[0-9]/.test(password)) {
+    errors.push('Password must contain at least one number');
+  }
+  if (!/[^A-Za-z0-9]/.test(password)) {
+    errors.push('Password must contain at least one special character');
+  }
+  
+  if (errors.length > 0) {
+    return res.status(400).json({ 
+      message: 'Password does not meet requirements',
+      errors 
+    });
+  }
+  
+  next();
+};
