@@ -101,3 +101,67 @@ export const updateEmail = async (req, res, next) => {
     next(err);
   }
 };
+
+// controllers/userController.js
+export const addSocialAccount = async (req, res, next) => {
+  try {
+    const { provider, providerId } = req.body;
+    
+    const user = await User.findById(req.user.id);
+    
+    // Check if account is already linked
+    const isLinked = user.socialAccounts.some(acc => 
+      acc.provider === provider && acc.providerId === providerId
+    );
+    
+    if (isLinked) {
+      return res.status(400).json({ message: 'Account already linked' });
+    }
+    
+    user.socialAccounts.push({ provider, providerId });
+    await user.save();
+    
+    res.status(200).json({
+      status: 'success',
+      data: {
+        user
+      }
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const removeSocialAccount = async (req, res, next) => {
+  try {
+    const { provider } = req.params;
+    
+    const user = await User.findById(req.user.id);
+    
+    // Check if user has at least one other auth method
+    const hasPassword = user.password && user.password !== 'google-auth';
+    const hasOtherAccounts = user.socialAccounts.some(acc => 
+      acc.provider !== provider
+    );
+    
+    if (!hasPassword && !hasOtherAccounts) {
+      return res.status(400).json({ 
+        message: 'Cannot remove last authentication method' 
+      });
+    }
+    
+    user.socialAccounts = user.socialAccounts.filter(
+      acc => acc.provider !== provider
+    );
+    await user.save();
+    
+    res.status(200).json({
+      status: 'success',
+      data: {
+        user
+      }
+    });
+  } catch (err) {
+    next(err);
+  }
+};
