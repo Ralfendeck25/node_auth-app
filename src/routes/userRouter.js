@@ -12,4 +12,11 @@ router.patch('/update-profile', userController.updateProfile);
 router.patch('/update-password', userController.updatePassword);
 router.patch('/update-email', userController.updateEmail);
 
+app.all('*', (req, res, next) => {
+  res.status(404).json({
+    status: 'fail',
+    message: `Can't find ${req.originalUrl} on this server!`
+  });
+});
+
 export default router;
