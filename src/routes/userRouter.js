@@ -15,7 +15,7 @@ router.patch('/update-email', userController.updateEmail);
 app.all('*', (req, res, next) => {
   res.status(404).json({
     status: 'fail',
-    message: `Can't find ${req.originalUrl} on this server!`
+    message: `Can't find ${req.originalUrl} on this server!`,
   });
 });
 

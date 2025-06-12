@@ -8,8 +8,14 @@ import { authRouter } from './routes/authRouter.js';
 import { userRouter } from './routes/userRouter.js';
 import { errorMiddleware } from './middlewares/errorMiddleware.js';
 
+import morgan from 'morgan';
+import logger from './utils/logger.js';
+
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Use morgan with winston
+app.use(morgan('combined', { stream: logger.stream }));
 
 app.use(
   cors({
