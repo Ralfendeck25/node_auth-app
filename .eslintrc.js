@@ -4,9 +4,7 @@ module.exports = {
     jest: true
   },
   rules: {
-    'no-proto': 0,
-    "no-shadow": ["error", { "allow": ["err", "req", "res"] }],
-    "no-console": "off"
+    'no-proto': 0
   },
   plugins: ['jest']
 };
